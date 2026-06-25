@@ -18,7 +18,7 @@ Instead of deploying traditional conda or pip environments, we leverage **Tykky*
 * **Isolation** — The complete Python dependency stack remains strictly separated from cluster host system modules.
 
 > [!NOTE]
-> This configuration forms an integral module of the [CSC Environment Helpers Framework](https://www.google.com/search?q=https://github.com/boss507104/CSCEnvironmentHelpers). This dedicated machine learning track removes the rigid dependency boundaries imposed by co-processing engines, enabling unconstrained updates to core numerical backend targets.
+> This configuration forms an integral module of the [CSC Environment Helpers Framework](https://www.google.com/search?q=https://github.com/boss507104/CSCEnvironmentHelpers). This dedicated machine learning track removes the rigid dependency boundaries imposed by co-processing engines, switching the foundation to Python 3.12 and enabling unconstrained updates to core numerical backend targets.
 
 ---
 
@@ -36,7 +36,7 @@ export ENV_NICKNAME="NICKNAME"              # Desired environment name
 # Derived Paths
 export BASE_SCRATCH="/scratch/$CSC_PROJECT/$CSC_USER/Utilities"
 export PYTHON_ROOT="$BASE_SCRATCH/Python"
-export ENV_PREFIX="$PYTHON_ROOT/envs/$ENV_NICKNAME-3.11"
+export ENV_PREFIX="$PYTHON_ROOT/envs/$ENV_NICKNAME-3.12"
 export TMP_BUILD_DIR="$BASE_SCRATCH/.tykky_runtime"
 
 # Initialise directories
@@ -57,7 +57,7 @@ echo "Configuration loaded for $CSC_PROJECT."
             ├── .tykky_runtime/             # $TMP_BUILD_DIR
             └── Python/                     # $PYTHON_ROOT
                 └── envs/
-                    └── $ENV_NICKNAME-3.11/  # $ENV_PREFIX
+                    └── $ENV_NICKNAME-3.12/  # $ENV_PREFIX
 
 ```
 
@@ -70,8 +70,9 @@ echo "Configuration loaded for $CSC_PROJECT."
 
 | Package | Version | Purpose / Constraint |
 | --- | --- | --- |
-| **Python** | 3.11 | Tykky container engine foundation base layer. |
+| **Python** | 3.12 | Tykky container engine foundation base layer (Optimised interpreter). |
 | **numpy** | $\ge$ 2.0.0 | Enabled next-generation vectorisation and performance features. |
+| **jax[cuda12]** | $\ge$ 0.4.30 | Uncapped tracking configuration for high-throughput execution backends. |
 
 All secondary python packages resolve automatically to their latest compatible releases using `pip-compile`.
 
@@ -98,7 +99,7 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - python=3.11
+  - python=3.12
   - pip
   - git
   - compilers
@@ -144,7 +145,7 @@ pyfoam
 kagglehub
 
 # --- JAX Ecosystem ---
-jax[cuda12]
+jax[cuda12]>=0.4.30
 diffrax
 distrax
 einops
@@ -168,7 +169,7 @@ mlflow
 mlxtend
 scikit-learn
 tensorboard
-treeple
+obliquetree
 wandb
 xgboost
 
@@ -312,7 +313,7 @@ cat <<EOF > ~/.local/share/jupyter/kernels/$ENV_NICKNAME/kernel.json
   "-f",
   "{connection_file}"
  ],
- "display_name": "Python-3.11 ($ENV_NICKNAME Tykky-ML)",
+ "display_name": "Python-3.12 ($ENV_NICKNAME Tykky-ML)",
  "language": "python",
  "metadata": {
   "debugger": true
