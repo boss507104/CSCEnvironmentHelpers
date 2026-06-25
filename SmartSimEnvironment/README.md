@@ -372,9 +372,9 @@ Load your runtime stack during production job preparation steps: `source $BASE_S
 Run this block to expose your single-file container image to Jupyter interfaces or remote VS Code connections:
 
 ```bash
-mkdir -p ~/.local/share/jupyter/kernels/$ENV_NICKNAME
+mkdir -p ~/.local/share/jupyter/kernels/$ENV_NICKNAME-smartsim
 
-cat <<EOF > ~/.local/share/jupyter/kernels/$ENV_NICKNAME/kernel.json
+cat <<EOF > ~/.local/share/jupyter/kernels/$ENV_NICKNAME-smartsim/kernel.json
 {
  "argv": [
   "$ENV_PREFIX/bin/python",
