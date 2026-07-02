@@ -37,9 +37,7 @@ export ENV_NICKNAME="NICKNAME"              # Desired environment name
 export BASE_SCRATCH="/scratch/$CSC_PROJECT/$CSC_USER/Utilities"
 export PYTHON_ROOT="$BASE_SCRATCH/Python"
 export ENV_PREFIX="$PYTHON_ROOT/envs/$ENV_NICKNAME-3.12"
-
-# Isolated scratch tracking subdirectory to prevent host system OS permission conflicts
-export TMP_BUILD_DIR="$BASE_SCRATCH/.tykky_isolated_build"
+export TMP_BUILD_DIR="$BASE_SCRATCH/.tykky_runtime"
 
 # Initialise directories
 rm -rf "$ENV_PREFIX"
@@ -57,7 +55,7 @@ echo "Configuration loaded for $CSC_PROJECT."
 └── $CSC_PROJECT/
     └── $CSC_USER/
         └── Utilities/                      # $BASE_SCRATCH
-            ├── .tykky_isolated_build/      # $TMP_BUILD_DIR
+            ├── .tykky_runtime/             # $TMP_BUILD_DIR
             └── Python/                     # $PYTHON_ROOT
                 └── envs/
                     └── $ENV_NICKNAME-3.12/  # $ENV_PREFIX
@@ -241,7 +239,7 @@ tabulate
 typing-extensions
 IN
 
-# Direct dependency installation without tracking file multiplication
+# Direct dependency installation bypassing metadata file multiplication
 python -m pip install --no-cache-dir -r requirements.in
 
 
@@ -264,12 +262,12 @@ srun --account=$CSC_PROJECT --partition=small --nodes=1 --ntasks=1 \
 
 ```
 
-Once the interactive compute allocation begins, export the environment tracking targets to the isolated scratch subfolder:
+If network limits delay package downloads, switch to `--partition=medium` to lengthen runtime.
 
 ```bash
 module load tykky
 
-# Direct container build tracking into the user-owned scratch space to bypass OS node locks
+# Explicitly bind the isolated scratch subdirectory for tracking tools
 export TMPDIR=$TMP_BUILD_DIR
 export CW_BUILD_TMPDIR=$TMP_BUILD_DIR
 
@@ -409,7 +407,6 @@ EOF
 ```bash
 module load tykky
 
-# Direct container build tracking into the user-owned scratch space to bypass OS node locks
 export TMPDIR=$TMP_BUILD_DIR
 export CW_BUILD_TMPDIR=$TMP_BUILD_DIR
 
