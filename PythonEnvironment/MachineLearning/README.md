@@ -38,13 +38,16 @@ export BASE_SCRATCH="/scratch/$CSC_PROJECT/$CSC_USER/Utilities"
 export PYTHON_ROOT="$BASE_SCRATCH/Python"
 export ENV_PREFIX="$PYTHON_ROOT/envs/$ENV_NICKNAME-3.12"
 
-# Bypassing shared filesystem allocations to avoid metadata inode quotas
-export TMP_BUILD_DIR="/tmp/$CSC_USER"
+# Isolated scratch tracking subdirectory to prevent host system OS permission conflicts
+export TMP_BUILD_DIR="$BASE_SCRATCH/.tykky_isolated_build"
 
 # Initialise directories
 rm -rf "$ENV_PREFIX"
+rm -rf "$TMP_BUILD_DIR"
 mkdir -p "$PYTHON_ROOT/envs" "$TMP_BUILD_DIR"
 echo "Configuration loaded for $CSC_PROJECT."
+
+
 ```
 
 **Directory Structure**
@@ -54,9 +57,11 @@ echo "Configuration loaded for $CSC_PROJECT."
 └── $CSC_PROJECT/
     └── $CSC_USER/
         └── Utilities/                      # $BASE_SCRATCH
+            ├── .tykky_isolated_build/      # $TMP_BUILD_DIR
             └── Python/                     # $PYTHON_ROOT
                 └── envs/
                     └── $ENV_NICKNAME-3.12/  # $ENV_PREFIX
+
 
 ```
 
@@ -88,6 +93,8 @@ Navigate to your working directory and generate the initial recipe layout:
 ```bash
 cd $PYTHON_ROOT
 nano -m base4ML.yml
+
+
 ```
 
 **Insert the following block into `base4ML.yml**`
@@ -104,12 +111,16 @@ dependencies:
   - cmake
   - make
   - ninja
+
+
 ```
 
 #### Heavy-Lifting Post-Installation Script
 
 ```bash
 nano -m extra4ML.sh
+
+
 ```
 
 **Insert the following block into `extra4ML.sh**`
@@ -232,10 +243,14 @@ IN
 
 # Direct dependency installation without tracking file multiplication
 python -m pip install --no-cache-dir -r requirements.in
+
+
 ```
 
 ```bash
 chmod +x extra4ML.sh
+
+
 ```
 
 ### 2. Build Tykky Container
@@ -245,22 +260,25 @@ Request an interactive session on a test node to execute the container packaging
 ```bash
 srun --account=$CSC_PROJECT --partition=small --nodes=1 --ntasks=1 \
      --cpus-per-task=16 --time=01:30:00 --pty bash
+
+
 ```
 
-Once the interactive compute allocation begins, export the node-local environments explicitly before triggering the compiler toolchains:
+Once the interactive compute allocation begins, export the environment tracking targets to the isolated scratch subfolder:
 
 ```bash
 module load tykky
 
-# Initialise local node isolation parameters
-export TMPDIR="/tmp/$CSC_USER"
-export CW_BUILD_TMPDIR="/tmp/$CSC_USER"
-mkdir -p "$TMPDIR"
+# Direct container build tracking into the user-owned scratch space to bypass OS node locks
+export TMPDIR=$TMP_BUILD_DIR
+export CW_BUILD_TMPDIR=$TMP_BUILD_DIR
 
 conda-containerize new \
     --prefix $ENV_PREFIX \
     --post-install $PYTHON_ROOT/extra4ML.sh \
     $PYTHON_ROOT/base4ML.yml
+
+
 ```
 
 ---
@@ -282,10 +300,14 @@ export PATH="\$ENV_PREFIX/bin:\$PATH"
 # JAX tuning
 export JAX_PLATFORMS="gpu"
 EOF
+
+
 ```
 
 ```bash
 chmod +x $BASE_SCRATCH/Python4ML.sh
+
+
 ```
 
 Load your runtime stack during production job preparation steps: `source $BASE_SCRATCH/Python4ML.sh`
@@ -315,10 +337,14 @@ cat <<EOF > ~/.local/share/jupyter/kernels/$ENV_NICKNAME-ml/kernel.json
  }
 }
 EOF
+
+
 ```
 
 ```bash
 echo "Jupyter kernel '$ENV_NICKNAME' has been registered."
+
+
 ```
 
 **Verify Registered Runtimes**
@@ -330,6 +356,8 @@ jupyter kernelspec list
 
 # Erase deprecated entries if required
 jupyter kernelspec uninstall -f <kernel_name>
+
+
 ```
 
 ---
@@ -340,6 +368,8 @@ Verify engine compatibility directly from your compute terminal:
 
 ```bash
 source $BASE_SCRATCH/Python4ML.sh
+
+
 ```
 
 ```bash
@@ -353,6 +383,8 @@ print(f'Equinox:    {eqx.__version__}')
 print(f'jax2onnx:   {version(\"jax2onnx\")}')
 print(f'NumPy:      {np.__version__}')
 "
+
+
 ```
 
 ---
@@ -377,9 +409,9 @@ EOF
 ```bash
 module load tykky
 
-# Reinforce local environment configuration bounds
-export TMPDIR="/tmp/$CSC_USER"
-export CW_BUILD_TMPDIR="/tmp/$CSC_USER"
+# Direct container build tracking into the user-owned scratch space to bypass OS node locks
+export TMPDIR=$TMP_BUILD_DIR
+export CW_BUILD_TMPDIR=$TMP_BUILD_DIR
 
 conda-containerize update \
     --post-install $PYTHON_ROOT/update_tools.sh \
