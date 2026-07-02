@@ -156,12 +156,11 @@ kagglehub
 
 # --- JAX Ecosystem ---
 jax[cuda12]==0.6.2
-distrax==0.1.5
 diffrax==0.6.0
 equinox==0.11.4
 jaxtyping==0.2.28
-jaxopt
 jax2onnx==0.1.1
+jaxopt
 einops
 lineax
 onnx
