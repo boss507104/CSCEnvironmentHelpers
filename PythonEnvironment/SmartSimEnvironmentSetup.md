@@ -356,7 +356,7 @@ Save the following initialisation template to your scratch workspace utility pat
 ```bash
 cat <<EOF > $BASE_SCRATCH/Python4SmartSim.sh
 #!/bin/bash
-module load gcc/13.1.0
+module load gcc/13.4.0
 
 # Paths
 export ENV_PREFIX="$ENV_PREFIX"
