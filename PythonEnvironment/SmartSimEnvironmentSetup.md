@@ -161,7 +161,7 @@ diffrax==0.6.0
 equinox==0.11.4
 jaxtyping==0.2.28
 jaxopt
-jax2onnx
+jax2onnx==0.1.1
 einops
 lineax
 onnx
