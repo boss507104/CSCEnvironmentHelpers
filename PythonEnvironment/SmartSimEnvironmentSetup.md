@@ -331,7 +331,7 @@ The client communication layer requires native compilation using standard cluste
 module purge
 
 # For Mahti: module load gcc/13.1.0 cmake/3.28.6 git
-module load gcc/13.4.0 cmake/3.26.5 git
+module load gcc/13.4.0 cmake/3.26.5
 
 cd "$BASE_SCRATCH"
 rm -rf SmartRedis
