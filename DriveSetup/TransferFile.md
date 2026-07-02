@@ -10,8 +10,8 @@ Mahti uses a symbolic link for the `.ssh` directory mapping to the persistent sc
 
 ```bash
 # Verify symbolic link and restrict permissions
-chmod 700 /scratch/project_2015384/Hanseul/SSH
-chmod 600 /scratch/project_2015384/Hanseul/SSH/id_ed25519
+chmod 700 /scratch/$CSC_PROJECT/$CSC_USER/SSH
+chmod 600 /scratch/$CSC_PROJECT/$CSC_USER/SSH/id_ed25519
 
 ```
 
@@ -19,7 +19,7 @@ To enable the short-term certificate signing mechanism on the Mahti login node, 
 
 ```bash
 # Append persistent shortcut to bash profile
-echo "alias csc-ssh-keys='python3.9 ~/certificate-helper-tool/csc_cert.py -u kanghans /scratch/project_2015384/Hanseul/SSH/id_ed25519.pub'" >> ~/.bashrc
+echo "alias csc-ssh-keys='python3.9 ~/certificate-helper-tool/csc_cert.py -u $CSC_USER_ID /scratch/$CSC_PROJECT/$CSC_USER/SSH/id_ed25519.pub'" >> ~/.bashrc
 source ~/.bashrc
 
 ```
@@ -56,13 +56,13 @@ Execute the `rsync` transaction by explicitly injecting the certified cryptograp
 
 ```bash
 rsync -avhi --progress \
-  -e "ssh -i /scratch/project_2015384/Hanseul/SSH/id_ed25519 -o StrictHostKeyChecking=no" \
-  /scratch/project_2015384/Hanseul/Research/Nets4DNS/Dataset/LES/output/ \
-  kanghans@roihu-cpu.csc.fi:/scratch/project_2015384/Hanseul/Research/Nets4DNS/Dataset/LES/output/
+  -e "ssh -i /scratch/$CSC_PROJECT/$CSC_USER/SSH/id_ed25519 -o StrictHostKeyChecking=no" \
+  /scratch/$CSC_PROJECT/$CSC_USER/$DATASET_DIR/ \
+  $CSC_USER_ID@roihu-cpu.csc.fi:/scratch/$CSC_PROJECT/$CSC_USER/$DATASET_DIR/
 
 ```
 
-> **Important structural note:** Leaving the trailing slash on the source directory path `/output/` processes only the constituent contents into the destination tree without generating redundant nested folders.
+> **Important structural note:** Leaving the trailing slash on the source directory path `/$DATASET_DIR/` processes only the constituent contents into the destination tree without generating redundant nested folders.
 
 ---
 
