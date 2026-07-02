@@ -137,7 +137,7 @@ pip install --no-cache-dir uv
 
 cat <<'IN' > requirements.in
 # --- Core Math & Data ---
-numpy==1.26.4
+numpy<2.0.0
 bottleneck
 dask
 h5py
@@ -178,7 +178,7 @@ lightgbm
 linear-tree
 mlflow
 mlxtend
-scikit-learn==1.5.2
+scikit-learn
 tensorboard
 treeple
 wandb
