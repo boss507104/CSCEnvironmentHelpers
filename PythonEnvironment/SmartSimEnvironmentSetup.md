@@ -156,13 +156,13 @@ kagglehub
 
 # --- JAX Ecosystem ---
 jax[cuda12]==0.6.2
-diffrax
-distrax
-einops
-equinox
-jax2onnx
+distrax==0.1.5
+diffrax==0.6.0
+equinox==0.11.4
+jaxtyping==0.2.28
 jaxopt
-jaxtyping
+jax2onnx
+einops
 lineax
 onnx
 optax
@@ -325,7 +325,9 @@ The client communication layer requires native compilation using standard cluste
 
 ```bash
 module purge
-module load gcc/13.1.0 cmake/3.28.6 git
+
+# For Mahti: module load gcc/13.1.0 cmake/3.28.6 git
+module load gcc/13.4.0 cmake/3.26.5 git
 
 cd "$BASE_SCRATCH"
 rm -rf SmartRedis
@@ -345,7 +347,7 @@ env -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS -u CC -u CXX -u FC \
 
 ## Environment Activation / Loader
 
-Save the following initialization template to your scratch workspace utility path at `$BASE_SCRATCH/Python4SmartSim.sh`.
+Save the following initialisation template to your scratch workspace utility path at `$BASE_SCRATCH/Python4SmartSim.sh`.
 
 ```bash
 cat <<EOF > $BASE_SCRATCH/Python4SmartSim.sh
